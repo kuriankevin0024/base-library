@@ -12,7 +12,7 @@ authors = [
   { name = "KurianKevin", email = "kuriankevin0024@gmail.com" }
 ]
 license = "MIT"
-dependencies = ["requests>=2.32", "urllib3>=2.4.0"]
+dependencies = ["requests>=2.32"]
 classifiers = [
   "Programming Language :: Python :: 3.11",
   "Operating System :: OS Independent"

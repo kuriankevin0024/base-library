@@ -31,8 +31,6 @@ class Request:
     def execute(url: str, method: str = 'GET', headers: dict = None, params: dict = None, payload: dict = None,
                 files: dict = None, stream: bool = False, verify: bool = True, timeout: int = 60,
                 retry_count: int = 2) -> requests.Response:
-        # import urllib3
-        # urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
         Url.validate(url=url)
         log.debug(f'request - url:{url} method:{method} headers:{headers} params:{params} payload:{payload} '
