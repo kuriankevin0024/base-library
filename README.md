@@ -4,14 +4,14 @@ collection of commonly used functions
 ## build package
 `python -m build`
 ## install package
-`pip install /Users/kuriankevin/Documents/GitHub/base-library/dist/baselibrary-0.0.1-py3-none-any.whl`
+`pip install /Users/kuriankevin/Documents/GitHub/base-library/dist/baselibrary-0.0.2-py3-none-any.whl`
 
 ## build and install package
 `pip install /Users/kuriankevin/Documents/GitHub/base-library`
 
 ## build and install local packages from requirements file
 ### install baselibrary from local folder
-`baselibrary @ file:///Users/kuriankevin/Documents/GitHub/base-library/dist/baselibrary-0.0.1-py3-none-any.whl`
+`baselibrary @ file:///Users/kuriankevin/Documents/GitHub/base-library/dist/baselibrary-0.0.2-py3-none-any.whl`
 ### build and install baselibrary from local folder
 `baselibrary @ file:///Users/kuriankevin/Documents/GitHub/base-library`
 ### build and install baselibrary from local folder in editable mode
@@ -32,3 +32,5 @@ collection of commonly used functions
 * string.validate is_snake_case()
 * logging.logger ApplicationLogger(), ApplicationLogger.get_logger(), LoggerUtil.mask()
 * api.request Request.execute(), Url.validate(), Url.encode()
+## version 0.0.2
+* Fixes Issue: base-library cannot be used without initializing a logger

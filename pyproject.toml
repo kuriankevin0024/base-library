@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "baselibrary"
-version = "0.0.1"
+version = "0.0.2"
 description = "Base library is a collection of all the reused common code."
 readme = "src/readme.md"
 requires-python = ">=3.11"

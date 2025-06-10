@@ -1,8 +1,9 @@
 import sys
-import typing
 import logging
-import pathlib
 import dataclasses
+from typing import Any
+from pathlib import Path
+from logging import Logger, Filter, Formatter, StreamHandler, FileHandler, INFO
 
 import baselibrary.common.validate as validate
 import baselibrary.string.validate as string_validate
@@ -16,7 +17,7 @@ class LoggerNotInitializedError(RuntimeError):
     pass
 
 
-class MaxLevelFilter(logging.Filter):
+class MaxLevelFilter(Filter):
     def __init__(self, max_level):
         super().__init__()
         self.max_level = max_level
@@ -33,19 +34,19 @@ class LoggerConfig:
     file_log_level: str = 'DEBUG'
 
     def __post_init__(self) -> None:
-        for f in dataclasses.fields(self):  # type: ignore[arg-type]
-            value = getattr(self, f.name)
-            validate.is_instance(value, str, f'only str type is accepted for {f.name}')
+        for field in dataclasses.fields(self):  # type: ignore[arg-type]
+            value = getattr(self, field.name)
+            validate.is_instance(value, str, f'only str type is accepted for {field.name}')
 
 
 class LoggerUtil:
     @staticmethod
-    def mask(object_: typing.Union[dict, list, typing.Any], patterns: list[str] = None) -> typing.Any:
+    def mask(object_: dict | list | Any, patterns: list[str] = None) -> Any:
         mask_pattern: str = "***MASKED***"
         if patterns is None:
             patterns = ['token']
         if isinstance(object_, dict):
-            result: dict[str, typing.Any] = {}
+            result: dict[str, Any] = {}
             for key, value in object_.items():
                 if any(patter.lower() in key.lower() for patter in patterns):
                     result[key] = mask_pattern
@@ -59,25 +60,26 @@ class LoggerUtil:
 
 
 class ApplicationLogger:
-    __logger: logging.Logger = None
+    __logger: Logger = None
 
-    def __init__(self, logger_name: str, logger_file: str | pathlib.Path = None, logger_config: LoggerConfig = LoggerConfig()):
+    def __init__(self, logger_name: str, logger_file: str | Path = None, logger_config: LoggerConfig = LoggerConfig()):
         validate.is_instance(logger_name, str, 'only str type is accepted for logger_name')
         self.__logger_name: str = logger_name
-        validate.is_instance(logger_file, (str, pathlib.Path), 'only str and pathlib.Path types are accepted for logger_file')
-        self.__logger_file: str | pathlib.Path = logger_file
+        if logger_file:
+            validate.is_instance(logger_file, (str, Path), 'only str and pathlib.Path types are accepted for logger_file')
+        self.__logger_file: str | Path = logger_file
         validate.is_instance(logger_config, LoggerConfig, 'only LoggerConfig type is accepted for logger_config')
         self.__logger_config: LoggerConfig = logger_config
         if ApplicationLogger.__logger is None:
             ApplicationLogger.__logger = self.__initialize_logger()
 
     @staticmethod
-    def __write_to_file(log_file: str | pathlib.Path) -> bool:
+    def __write_to_file(log_file: str | Path) -> bool:
         if log_file is None:
             return False
         file_validate.is_absolute(path=log_file)
 
-        log_path: str | pathlib.Path = file_helper.get_parent(path=log_file)
+        log_path: str | Path = file_helper.get_parent(path=log_file)
         folder_validate.exists(path=log_path)
         folder_validate.is_writable(path=log_path)
 
@@ -86,35 +88,51 @@ class ApplicationLogger:
 
         return True
 
-    def __initialize_logger(self) -> logging.Logger:
-        formatter: logging.Formatter = logging.Formatter(
+    def __initialize_logger(self) -> Logger:
+        formatter: Formatter = Formatter(
             fmt='%(asctime)s - %(name)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s')
 
         string_validate.is_snake_case(value=self.__logger_name)
-        logger: logging.Logger = logging.getLogger(name=self.__logger_name)
+        logger: Logger = logging.getLogger(name=self.__logger_name)
         logger.setLevel(level=self.__logger_config.root_log_level)
 
-        stdout_handler: logging.StreamHandler = logging.StreamHandler(stream=sys.stdout)
+        stdout_handler: StreamHandler = StreamHandler(stream=sys.stdout)
         stdout_handler.setLevel(level=self.__logger_config.stdout_log_level)
-        stdout_handler.addFilter(filter=MaxLevelFilter(logging.INFO))
+        stdout_handler.addFilter(filter=MaxLevelFilter(INFO))
         stdout_handler.setFormatter(fmt=formatter)
         logger.addHandler(hdlr=stdout_handler)
 
-        stderr_handler: logging.StreamHandler = logging.StreamHandler(stream=sys.stderr)
+        stderr_handler: StreamHandler = StreamHandler(stream=sys.stderr)
         stderr_handler.setLevel(level=self.__logger_config.stderr_log_level)
         stderr_handler.setFormatter(fmt=formatter)
         logger.addHandler(hdlr=stderr_handler)
 
         if ApplicationLogger.__write_to_file(log_file=self.__logger_file):
-            file_handler: logging.FileHandler = logging.FileHandler(filename=self.__logger_file)
+            file_handler: FileHandler = FileHandler(filename=self.__logger_file)
             file_handler.setLevel(level=self.__logger_config.file_log_level)
             file_handler.setFormatter(fmt=formatter)
             logger.addHandler(hdlr=file_handler)
 
+        logger.info(f'logger initialized, name:{self.__logger_name}')
+        return logger
+
+    @staticmethod
+    def __default_logger():
+        formatter: Formatter = Formatter(
+            fmt='%(asctime)s - %(name)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s')
+
+        logger: Logger = logging.getLogger(name='default_logger')
+        logger.setLevel(level=INFO)
+
+        stream_handler: StreamHandler = StreamHandler()
+        stream_handler.setFormatter(fmt=formatter)
+        logger.addHandler(hdlr=stream_handler)
+
+        logger.info('logger initialized, name:default_logger')
         return logger
 
     @classmethod
-    def get_logger(cls) -> logging.Logger:
+    def get_logger(cls) -> Logger:
         if cls.__logger is None:
-            raise LoggerNotInitializedError('create an ApplicationLogger instance before calling get_logger()')
+            return cls.__default_logger()
         return cls.__logger
