@@ -70,8 +70,7 @@ class ApplicationLogger:
         self.__logger_file: str | Path = logger_file
         validate.is_instance(logger_config, LoggerConfig, 'only LoggerConfig type is accepted for logger_config')
         self.__logger_config: LoggerConfig = logger_config
-        if ApplicationLogger.__logger is None:
-            ApplicationLogger.__logger = self.__initialize_logger()
+        self.__logger = self.__initialize_logger()
 
     @staticmethod
     def __write_to_file(log_file: str | Path) -> bool:
@@ -134,5 +133,5 @@ class ApplicationLogger:
     @classmethod
     def get_logger(cls) -> Logger:
         if cls.__logger is None:
-            return cls.__default_logger()
+            cls.__logger = cls.__default_logger()
         return cls.__logger

@@ -8,8 +8,10 @@ from urllib.parse import ParseResult
 
 import logging
 import baselibrary.logging.logger as logger
-
 log: logging.Logger = logger.ApplicationLogger.get_logger()
+
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Url:
