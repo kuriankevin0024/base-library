@@ -11,12 +11,12 @@ Base library is a collection of all the reused common code.
 ## how to use base-library
 * build package: `python -m build`
 * install build package: `pip install /Users/kuriankevin/Documents/Learning/base-library/dist/baselibrary-0.0.2-py3-none-any.whl`
-* build and install package : `pip install /Users/kuriankevin/Documents/GitHub/base-library`
+* build and install package : `pip install /Users/kuriankevin/Documents/Learning/base-library`
 
 ## how to use base-library in requirements file
-* install build package from local path: `baselibrary @ file:///Users/kuriankevin/Documents/GitHub/base-library/dist/baselibrary-0.0.2-py3-none-any.whl`
-* build and install package from local path: `baselibrary @ file:///Users/kuriankevin/Documents/GitHub/base-library`
-* build and install package from local folder in edit mode: `-e /Users/kuriankevin/Documents/GitHub/base-library`
+* install build package from local path: `baselibrary @ file:///Users/kuriankevin/Documents/Learning/base-library/dist/baselibrary-0.0.2-py3-none-any.whl`
+* build and install package from local path: `baselibrary @ file:///Users/kuriankevin/Documents/Learning/base-library`
+* build and install package from local folder in edit mode: `-e /Users/kuriankevin/Documents/Learning/base-library`
 
 # Releases
 ## version 0.0.1
