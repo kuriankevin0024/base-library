@@ -7,14 +7,14 @@ name = "baselibrary"
 version = "0.0.2"
 description = "Base library is a collection of all the reused common code."
 readme = "src/readme.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 authors = [
   { name = "KurianKevin", email = "kuriankevin0024@gmail.com" }
 ]
 license = "MIT"
 dependencies = ["requests>=2.32", "urllib3>=2.4.0"]
 classifiers = [
-  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.13",
   "Operating System :: OS Independent"
 ]
 
