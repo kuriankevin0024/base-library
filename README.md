@@ -32,3 +32,4 @@ Base library is a collection of all the reused common code.
 * api.request Request.execute(), Url.validate(), Url.encode()
 ## version 0.0.2
 * Fixes Issue: base-library cannot be used without initializing a logger
+* 
